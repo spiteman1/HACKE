@@ -2,3 +2,8 @@ build/
 .vscode/
 *.o
 hacke_bench
+matrix_app
+
+#windows identifiers 
+*:Zone.Identifier
+*Zone.Identifier*

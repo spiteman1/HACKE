@@ -2,9 +2,7 @@
 #include "kernels.hpp"
 #include <vector>
 
-void sanity_check() {
-    std::cout << "[HACKE] Toolchain online. Ready for Objective 1.\n";
-}
+
 
 class Matrix{
     private:
