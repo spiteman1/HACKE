@@ -1,53 +1,91 @@
 #include <iostream>
 #include "kernels.hpp"
 #include <vector>
+#include <random>
 
-
-
-class Matrix{
-    private:
+class Matrix {
+private:
     std::size_t n;
     std::vector<int> data;
 
-    public:
+public:
     // Initialize an N x N matrix filled with a default value (e.g. 0)
-    Matrix(std::size_t size, int init_val =0 )
-    : n(size), data(size * size, init_val) {} 
-    
+    Matrix(std::size_t size, int init_val = 0)
+        : n(size), data(size * size, init_val) {}
+
     // Overload operator() for non-const access: mat(r, c) = 5;
-    int& operator()(std::size_t row, std::size_t col){
-        return data[row*n +col];
+    int& operator()(std::size_t row, std::size_t col) {
+        return data[row * n + col];
     }
+
     // Overload operator() for const access: int x = mat(r, c);
-    const int& operator()(std::size_t row, std::size_t col) const{
-        return data[row*n +col];
+    const int& operator()(std::size_t row, std::size_t col) const {
+        return data[row * n + col];
     }
 
-    std::size_t size() const {return n; }
+    std::size_t size() const { return n; }
 
-    //Direct access to the raw underlying contigous buffer
-    int* raw_data() {return data.data();}
-    const int* raw_data() const {return data.data();}
+    // Direct access to the raw underlying contiguous buffer
+    int* raw_data() { return data.data(); }
+    const int* raw_data() const { return data.data(); }
 };
+double getRandomValue(double min, double max){
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
 
-int main() {
-    std:: size_t N=3;
-    Matrix mat(N);
+        std::uniform_real_distribution<double> dist(min,max);
+        return dist(gen);
 
-    // Populate matrix with values 1 to N*N
-    int counter = 1;
-    for (std::size_t r = 0; r < N; ++r) {
-        for (std::size_t c = 0; c < N; ++c) {
-            mat(r, c) = counter++;
-        }
-    }
-
+}
+void printMatrix(Matrix A){
     // Print matrix
+    std::size_t N=A.size();
     for (std::size_t r = 0; r < N; ++r) {
         for (std::size_t c = 0; c < N; ++c) {
-            std::cout << mat(r, c) << " ";
+            std::cout << A(r, c) << "\t ";
         }
         std::cout << "\n";
     }
+}
+void naiveGemm(Matrix A,
+                Matrix B                               
+){
+    std::size_t size= A.size();
+    Matrix C(size,0);
+
+    for (std::size_t i = 0; i < size; ++i) {
+        for (std::size_t j = 0; j < size; ++j) {
+            for (std::size_t k = 0; k < size; ++k) {
+                C(i, j) += A(i, k) * B(k, j);
+            }
+        }
+    }
+
+    printMatrix(C);
+}
+
+
+int main() {
+    std::size_t N = 3;
+    Matrix matB(N);
+    Matrix matA(N);
+
+    // Populate matrix with values 1 to N*N
+    
+    for (std::size_t r = 0; r < N; ++r) {
+        for (std::size_t c = 0; c < N; ++c) {
+            matB(r, c) = getRandomValue(0.0,1000.0);
+        }
+    }
+    for (std::size_t r = 0; r < N; ++r) {
+        for (std::size_t c = 0; c < N; ++c) {
+            matA(r, c) = getRandomValue(0.0,10000.0);
+        }
+    }
+
+    naiveGemm( matA,matB);
     return 0;
 }
+
+
+
