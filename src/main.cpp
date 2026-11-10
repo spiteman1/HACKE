@@ -81,12 +81,12 @@ void naiveGemm(Matrix A,
     double GFLOPS= totalFlops/ (seconds*result);
     std::cout <<"EQUALS C"<< "\n";
     printMatrix(C);
-    std::cout <<"Time taken in GFLOPS:" <<GFLOPS << "\n" ;
+    std::cout <<"Perfomance (GFLOPS):" <<GFLOPS << "\n" ;
 }
 
 
 int main() {
-    std::size_t N = 4;
+    std::size_t N = 10;
     Matrix matB(N);
     Matrix matA(N);
 
