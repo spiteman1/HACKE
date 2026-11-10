@@ -2,6 +2,8 @@
 #include "kernels.hpp"
 #include <vector>
 #include <random>
+#include <chrono>
+#include <cmath>
 
 class Matrix {
 private:
@@ -49,10 +51,16 @@ void printMatrix(Matrix A){
 }
 void naiveGemm(Matrix A,
                 Matrix B                               
-){
+){  
+    std::cout<< "Matrix A"<< "\n";
+    printMatrix(A);
+    std::cout << "X" << "\n";
+
+    std::cout<< "Matrix B"<< "\n";
+    printMatrix(B);
     std::size_t size= A.size();
     Matrix C(size,0);
-
+    auto start =std::chrono::steady_clock::now();
     for (std::size_t i = 0; i < size; ++i) {
         for (std::size_t j = 0; j < size; ++j) {
             for (std::size_t k = 0; k < size; ++k) {
@@ -60,13 +68,25 @@ void naiveGemm(Matrix A,
             }
         }
     }
+    auto end= std::chrono::steady_clock::now();
+    double N = static_cast<double>(size);
+    double totalFlops= 2*(N*N*N);
 
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    double seconds = elapsed_seconds.count();
+    double base= 10.0;
+    double exponent=9.0;
+    double result=std::pow(base, exponent);
+
+    double GFLOPS= totalFlops/ (seconds*result);
+    std::cout <<"EQUALS C"<< "\n";
     printMatrix(C);
+    std::cout <<"Time taken in GFLOPS:" <<GFLOPS << "\n" ;
 }
 
 
 int main() {
-    std::size_t N = 3;
+    std::size_t N = 4;
     Matrix matB(N);
     Matrix matA(N);
 
@@ -82,8 +102,9 @@ int main() {
             matA(r, c) = getRandomValue(0.0,10000.0);
         }
     }
-
+    
     naiveGemm( matA,matB);
+   
     return 0;
 }
 
