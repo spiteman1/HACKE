@@ -8,28 +8,28 @@
 class Matrix {
 private:
     std::size_t n;
-    std::vector<int> data;
+    std::vector<double> data;
 
 public:
     // Initialize an N x N matrix filled with a default value (e.g. 0)
-    Matrix(std::size_t size, int init_val = 0)
+    Matrix(std::size_t size, double init_val = 0)
         : n(size), data(size * size, init_val) {}
 
     // Overload operator() for non-const access: mat(r, c) = 5;
-    int& operator()(std::size_t row, std::size_t col) {
+    double& operator()(std::size_t row, std::size_t col) {
         return data[row * n + col];
     }
 
     // Overload operator() for const access: int x = mat(r, c);
-    const int& operator()(std::size_t row, std::size_t col) const {
+    const double& operator()(std::size_t row, std::size_t col) const {
         return data[row * n + col];
     }
 
     std::size_t size() const { return n; }
 
     // Direct access to the raw underlying contiguous buffer
-    int* raw_data() { return data.data(); }
-    const int* raw_data() const { return data.data(); }
+    double* raw_data() { return data.data(); }
+    const double* raw_data() const { return data.data(); }
 };
 double getRandomValue(double min, double max){
         static std::random_device rd;
@@ -41,6 +41,7 @@ double getRandomValue(double min, double max){
 }
 void printMatrix(Matrix A){
     // Print matrix
+    
     std::size_t N=A.size();
     for (std::size_t r = 0; r < N; ++r) {
         for (std::size_t c = 0; c < N; ++c) {
@@ -59,7 +60,8 @@ void naiveGemm(Matrix A,
     std::cout<< "Matrix B"<< "\n";
     printMatrix(B);
     std::size_t size= A.size();
-    Matrix C(size,0);
+    double inputNum=0.0;
+    Matrix C(size,inputNum);
     auto start =std::chrono::steady_clock::now();
     for (std::size_t i = 0; i < size; ++i) {
         for (std::size_t j = 0; j < size; ++j) {
@@ -86,7 +88,7 @@ void naiveGemm(Matrix A,
 
 
 int main() {
-    std::size_t N = 10;
+    std::size_t N =1024;
     Matrix matB(N);
     Matrix matA(N);
 
@@ -103,7 +105,7 @@ int main() {
         }
     }
     
-    naiveGemm( matA,matB);
+    naiveGemm(matA,matB);
    
     return 0;
 }
