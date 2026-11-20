@@ -4,6 +4,7 @@
 #include <random>
 #include <chrono>
 #include <cmath>
+#include <cstdlib>
 
 class Matrix {
 private:
@@ -33,7 +34,7 @@ public:
 };
 double getRandomValue(double min, double max){
         static std::random_device rd;
-        static std::mt19937 gen(rd());
+        static std::mt19937 gen(42);
 
         std::uniform_real_distribution<double> dist(min,max);
         return dist(gen);
@@ -43,25 +44,21 @@ void printMatrix(Matrix A){
     // Print matrix
     
     std::size_t N=A.size();
+    if (N<4){
     for (std::size_t r = 0; r < N; ++r) {
         for (std::size_t c = 0; c < N; ++c) {
             std::cout << A(r, c) << "\t ";
         }
         std::cout << "\n";
-    }
+    }}
 }
-void naiveGemm(Matrix A,
-                Matrix B                               
+void naiveGemm(Matrix& A,
+                Matrix& B,
+                Matrix& C                            
 ){  
-    std::cout<< "Matrix A"<< "\n";
-    printMatrix(A);
-    std::cout << "X" << "\n";
-
-    std::cout<< "Matrix B"<< "\n";
-    printMatrix(B);
+    double SINGLE_THEORETICAL_PEAK=81.6;//single core theoretical peak on my CPU -AMD Ryzen 7 PRO 8840HS / need function to change this depending on host
     std::size_t size= A.size();
     double inputNum=0.0;
-    Matrix C(size,inputNum);
     auto start =std::chrono::steady_clock::now();
     for (std::size_t i = 0; i < size; ++i) {
         for (std::size_t j = 0; j < size; ++j) {
@@ -78,19 +75,22 @@ void naiveGemm(Matrix A,
     double seconds = elapsed_seconds.count();
     double base= 10.0;
     double exponent=9.0;
-    double result=std::pow(base, exponent);
+    double giga=std::pow(base, exponent);
 
-    double GFLOPS= totalFlops/ (seconds*result);
-    std::cout <<"EQUALS C"<< "\n";
-    printMatrix(C);
-    std::cout <<"Perfomance (GFLOPS):" <<GFLOPS << "\n" ;
+    double GFLOPS= totalFlops/ (seconds*giga);
+    double pct_peak = (GFLOPS / SINGLE_THEORETICAL_PEAK) * 100.0;
+    std::cout << size << "," << seconds << "," << GFLOPS << "," << pct_peak << "\n";
 }
 
 
-int main() {
-    std::size_t N =1024;
+int main(int argc, char* argv[]) {
+    std::size_t N = 256; 
+    if (argc > 1) {
+        N = std::stoull(argv[1]);
+    }
     Matrix matB(N);
     Matrix matA(N);
+    Matrix matC(N, 0.0);
 
     // Populate matrix with values 1 to N*N
     
@@ -105,7 +105,7 @@ int main() {
         }
     }
     
-    naiveGemm(matA,matB);
+    naiveGemm(matA,matB,matC);
    
     return 0;
 }
