@@ -3,8 +3,8 @@ build/
 *.o
 hacke_bench
 matrix_app
-.png
-.csv
+*.png
+*.csv
 #windows identifiers 
 *:Zone.Identifier
 *Zone.Identifier*
