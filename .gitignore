@@ -2,7 +2,7 @@ build/
 .vscode/
 *.o
 hacke_bench
-matrix_app
+*.matrix_app
 *.png
 *.pdf
 *.csv
