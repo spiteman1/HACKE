@@ -8,3 +8,4 @@ matrix_app
 #windows identifiers 
 *:Zone.Identifier
 *Zone.Identifier*venv/
+.venv/
