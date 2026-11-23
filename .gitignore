@@ -11,3 +11,4 @@ hacke_bench
 *Zone.Identifier*venv/
 .venv/
 .venv/
+*.py
