@@ -4,6 +4,7 @@ build/
 hacke_bench
 matrix_app
 *.png
+*.pdf
 *.csv
 #windows identifiers 
 *:Zone.Identifier
