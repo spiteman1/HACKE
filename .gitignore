@@ -7,4 +7,4 @@ matrix_app
 *.csv
 #windows identifiers 
 *:Zone.Identifier
-*Zone.Identifier*
+*Zone.Identifier*venv/
